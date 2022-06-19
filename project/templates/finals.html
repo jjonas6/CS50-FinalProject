@@ -1,0 +1,655 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Finals
+{% endblock %}
+
+{% block script %}
+
+<script>
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Adds a class to highlight the rows to show which teams qualify for the knockout rounds
+    first = document.getElementsByClassName("1");
+    second = document.getElementsByClassName("2");
+
+    for (let i = 0; i < first.length; i++) {
+        first[i].className += " table-success";
+    }
+    for (let i = 0; i < second.length; i++) {
+        second[i].className += " table-success";
+    }
+
+
+    let span = document.getElementsByClassName("close")[0];
+
+
+    span.onclick = function () {
+        document.getElementById("winnerModal").style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == document.getElementById("winnerModal")) {
+            document.getElementById("winnerModal").style.display = "none";
+        }
+}
+});
+
+
+
+r16teams = JSON.parse({{ r16teams | tojson }});
+
+function simulateGame(team1, team2) {
+    rating1 = team1[1];
+    rating2 = team2[1];
+    probability = 1 / (1 + 10 ** ((rating2 - rating1) / 600));
+    return Math.random() < probability;
+};
+winners = [];
+
+function simulateRoundOf16() {
+
+    // simulates games
+    for (let i = 0; i < r16teams.length; i += 2) {
+        if (simulateGame(r16teams[i], r16teams[i + 1])) {
+            winners.push(r16teams[i]);
+        } else {
+            winners.push(r16teams[i + 1]);
+        }
+
+    }
+    // adds winner to bracket
+    for (let i = 0; i < winners.length; i++) {
+        document.getElementById("QF" + (i + 1)).innerHTML = winners[i][0];
+    }
+
+    //disables previous button and enables the next button
+    document.getElementById("simulateA").setAttribute("disabled", true);
+    document.getElementById("simulateB").setAttribute("disabled", true);
+    document.getElementById("simulateC").setAttribute("disabled", true);
+    document.getElementById("simulateD").setAttribute("disabled", true);
+    document.getElementById("simulateE").setAttribute("disabled", true);
+    document.getElementById("simulateF").setAttribute("disabled", true);
+    document.getElementById("simulateG").setAttribute("disabled", true);
+    document.getElementById("simulateH").setAttribute("disabled", true);
+    document.getElementById("simulateR16").setAttribute("disabled", true);
+    document.getElementById("simulateQtrs").removeAttribute("disabled");
+};
+
+function simulateQuarters() {
+
+    quarters = winners.slice(0, winners.length);
+    winners.splice(0, winners.length);
+    // simulates games
+    for (let i = 0; i < quarters.length; i += 2) {
+        if (simulateGame(quarters[i], quarters[i + 1])) {
+            winners.push(quarters[i]);
+        } else {
+            winners.push(quarters[i + 1]);
+        }
+
+    }
+    // adds winner to bracket
+    for (let i = 0; i < winners.length; i++) {
+        document.getElementById("SF" + (i + 1)).innerHTML = winners[i][0];
+    }
+    //disables previous button and enables the next button
+    document.getElementById("simulateQtrs").setAttribute("disabled", true);
+    document.getElementById("simulateSemi").removeAttribute("disabled");
+}
+
+function simulateSemis() {
+
+    semis = winners.slice(0, winners.length);
+    winners.splice(0, winners.length);
+    // simulates games
+    for (let i = 0; i < semis.length; i += 2) {
+        if (simulateGame(semis[i], semis[i + 1])) {
+            winners.push(semis[i]);
+        } else {
+            winners.push(semis[i + 1]);
+        }
+
+    }
+    // adds winner to bracket
+    for (let i = 0; i < winners.length; i++) {
+        document.getElementById("FI" + (i + 1)).innerHTML = winners[i][0];
+    }
+    //disables previous button and enables the next button
+    document.getElementById("simulateSemi").setAttribute("disabled", true);
+    document.getElementById("simulateFinal").removeAttribute("disabled");
+}
+
+function simulateFinal() {
+
+    finals = winners.slice(0, winners.length);
+    winners.splice(0, winners.length);
+    // simulates games
+    for (let i = 0; i < finals.length; i += 2) {
+        if (simulateGame(finals[i], finals[i + 1])) {
+            winners.push(finals[i]);
+        } else {
+            winners.push(finals[i + 1]);
+        }
+
+    }
+    // adds winner to bracket
+    for (let i = 0; i < winners.length; i++) {
+        document.getElementById("champ").innerHTML = winners[i][0];
+    }
+    //disables previous button and enables the next button
+    document.getElementById("simulateFinal").setAttribute("disabled", true);
+    document.getElementById("winner").innerHTML = "<div class='alert'><strong>" + winners[0][0] + "</strong> win the 2022 FIFA World Cup!</div>"
+
+    document.getElementById("modal").innerHTML = winners[0][0] + ' win the 2022 FIFA World Cup!'
+
+    let modal = document.getElementById("winnerModal");
+
+    modal.style.display = "block";
+}
+
+
+
+
+</script>
+{% endblock %}
+
+{% block main %}
+<div id="winner">
+
+</div>
+<!-- Knockouts -->
+<div class="tournament-container">
+    <div class="tournament-headers">
+        <h3>Round of 16</h3>
+        <h3>Quarter-Finals</h3>
+        <h3>Semi-Finals</h3>
+        <h3>Final</h3>
+        <h3>Winner</h3>
+    </div>
+
+    <div class="tournament-brackets">
+        <ul class="bracket bracket-1">
+            <li class="team-item">
+            {% for team in a %}
+                {% if groupWinners[0] != null and team.name == groupWinners[0][0] %}
+                {{ groupWinners[0][0] }}
+                {% endif %}
+            {% endfor %}
+                <time>14:00</time>
+            {% for team in b %}
+                {% if groupWinners[1] != null and team.name == groupWinners[1][0] %}
+                {{ groupWinners[1][0] }}
+                {% endif %}
+            {% endfor %}
+            </li>
+            <li class="team-item">
+            {% for team in c %}
+                {% if groupWinners[2] != null and team.name == groupWinners[2][0] %}
+                {{ groupWinners[2][0] }}
+                {% endif %}
+            {% endfor %}
+                <time>20:00</time>
+            {% for team in d %}
+                {% if groupWinners[3] != null and team.name == groupWinners[3][0] %}
+                {{ groupWinners[3][0] }}
+                {% endif %}
+            {% endfor %}
+            </li>
+            <li class="team-item">
+            {% for team in e %}
+                {% if groupWinners[4] != null and team.name == groupWinners[4][0] %}
+                {{ groupWinners[4][0] }}
+                {% endif %}
+            {% endfor %}
+                <time>17:00</time>
+            {% for team in f %}
+                {% if groupWinners[5] != null and team.name == groupWinners[5][0] %}
+                {{ groupWinners[5][0] }}
+                {% endif %}
+            {% endfor %}
+            </li>
+            <li class="team-item">
+            {% for team in g %}
+                {% if groupWinners[6] != null and team.name == groupWinners[6][0] %}
+                {{ groupWinners[6][0] }}
+                {% endif %}
+            {% endfor %}
+                <time>20:00</time>
+            {% for team in h %}
+                {% if groupWinners[7] != null and team.name == groupWinners[7][0] %}
+                {{ groupWinners[7][0] }}
+                {% endif %}
+            {% endfor %}
+            </li>
+            <li class="team-item">
+            {% for team in f %}
+                {% if groupWinners[8] != null and team.name == groupWinners[8][0] %}
+                {{ groupWinners[8][0] }}
+                {% endif %}
+            {% endfor %}
+                <time>17:00</time>
+            {% for team in e %}
+                {% if groupWinners[9] != null and team.name == groupWinners[9][0] %}
+                {{ groupWinners[9][0] }}
+                {% endif %}
+            {% endfor %}
+            </li>
+            <li class="team-item">
+            {% for team in h %}
+                {% if groupWinners[10] != null and team.name == groupWinners[10][0] %}
+                {{ groupWinners[10][0] }}
+                {% endif %}
+            {% endfor %}
+                <time>17:00</time>
+            {% for team in g %}
+                {% if groupWinners[11] != null and team.name == groupWinners[11][0] %}
+                {{ groupWinners[11][0] }}
+                {% endif %}
+            {% endfor %}
+            </li>
+            <li class="team-item">
+            {% for team in b %}
+                {% if groupWinners[12] != null and team.name == groupWinners[12][0] %}
+                {{ groupWinners[12][0] }}
+                {% endif %}
+            {% endfor %}
+                <time>14:00</time>
+            {% for team in a %}
+                {% if groupWinners[13] != null and team.name == groupWinners[13][0] %}
+                {{ groupWinners[13][0] }}
+                {% endif %}
+            {% endfor %}
+            </li>
+            <li class="team-item">
+            {% for team in d %}
+                {% if groupWinners[14] != null and team.name == groupWinners[14][0] %}
+                {{ groupWinners[14][0] }}
+                {% endif %}
+            {% endfor %}
+                <time>20:00</time>
+            {% for team in c %}
+                {% if groupWinners[15] != null and team.name == groupWinners[15][0] %}
+                {{ groupWinners[15][0] }}
+                {% endif %}
+            {% endfor %}
+            </li>
+        </ul>
+    <ul class="bracket bracket-2">
+        <li class="team-item">
+            <span id="QF1"></span>
+            <time>20:00</time>
+            <span id="QF2"></span>
+        </li>
+        <li class="team-item">
+            <span id="QF3"></span>
+            <time>20:00</time>
+            <span id="QF4"></span>
+        </li>
+        <li class="team-item">
+            <span id="QF5"></span>
+            <time>20:00</time>
+            <span id="QF6"></span>
+        </li>
+        <li class="team-item">
+            <span id="QF7"></span>
+            <time>20:00</time>
+            <span id="QF8"></span>
+        </li>
+    </ul>
+    <ul class="bracket bracket-3">
+        <li class="team-item">
+            <span id="SF1"></span>
+            <time>20:00</time>
+            <span id="SF2"></span>
+        </li>
+        <li class="team-item">
+            <span id="SF3"></span>
+            <time>20:00</time>
+            <span id="SF4"></span>
+        </li>
+    </ul>
+    <ul class="bracket bracket-4">
+        <li class="team-item">
+            <span id="FI1"></span>
+            <time>20:00</time>
+            <span id="FI2"></span>
+        </li>
+    </ul>
+    <ul class="bracket bracket-5">
+      <li class="team-item"><strong>World Cup Champions</strong><br><span id="champ"></span></li>
+    </ul>
+  </div>
+</div>
+
+<div class="row">
+    <div class="column">
+        <span>
+            <button class="btn btn-primary" type="button" id="simulateR16" value="Simulate Round of 16" onclick="simulateRoundOf16()">Simulate Round of 16</button>
+        </span>
+    </div>
+    <div class="column">
+        <span>
+            <button class="btn btn-primary" type="submit" id="simulateQtrs" name="Qtrs" value="Simulate Quarterfinals" onclick="simulateQuarters()" disabled>Simulate Quarterfinals</button>
+        </span>
+    </div>
+    <div class="column">
+        <span>
+            <button class="btn btn-primary" type="submit" id="simulateSemi" name="Semi" value="Simulate Semifinals" onclick="simulateSemis()" disabled>Simulate Semifinals</button>
+        </span>
+    </div>
+    <div class="column">
+        <span>
+            <button class="btn btn-primary" type="submit" id="simulateFinal" name="Final" value="Simulate Final" onclick="simulateFinal()" disabled>Simulate Final</button>
+        </span>
+    </div>
+</div>
+
+<!-- Winner Modal -->
+<div id="winnerModal" class="modal">
+
+  <!-- Modal content -->
+  <div class="modal-content">
+
+    <span class="close">&times;</span>
+    <p id="modal"></p>
+  </div>
+
+</div>
+
+<!-- Group Stage -->
+<div class="row">
+    <div class="column">
+        <table class="table table-sm" id="A">
+            <thead>
+                <strong>Group A</strong>
+                <tr>
+                    <th>
+                        Position
+                    </th>
+                    <th>
+                        Team
+                    </th>
+                    <th>
+                        Points
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in a %}
+                <tr class="{{ loop.index }}">
+                    <td>
+                        {{ team.position }}
+                    </td>
+                    <td>
+                        {{ team.name }}
+                    </td>
+                    <td>
+                        {{ team.points }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <form action="/finals" method="post">
+            <input class="btn btn-primary" type="submit" id="simulateA" name="A" value="Simulate Group A">
+        </form>
+    </div>
+    <div class="column">
+        <table class="table table-sm" id="B">
+            <thead>
+                <strong>Group B</strong>
+                <tr>
+                    <th>
+                        Position
+                    </th>
+                    <th>
+                        Team
+                    </th>
+                    <th>
+                        Points
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in b %}
+                <tr class="{{ loop.index }}">
+                    <td>
+                        {{ team.position }}
+                    </td>
+                    <td>
+                        {{ team.name }}
+                    </td>
+                    <td>
+                        {{ team.points }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <form action="/finals" method="post">
+            <input class="btn btn-primary" type="submit" id="simulateB" name="B" value="Simulate Group B">
+        </form>
+</div>
+<div class="column">
+<table class="table table-sm" id="C">
+    <thead>
+        <strong>Group C</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in c %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<form action="/finals" method="post">
+    <input class="btn btn-primary" type="submit" id="simulateC" name="C" value="Simulate Group C">
+</form>
+</div>
+<div class="column">
+<table class="table table-sm" id="D">
+    <thead>
+        <strong>Group D</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in d %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<form action="/finals" method="post">
+    <input class="btn btn-primary" type="submit" id="simulateD" name="D" value="Simulate Group D">
+</form>
+    </div>
+</div>
+<div class="row">
+    <div class="column">
+<table class="table table-sm" id="E">
+    <thead>
+        <strong>Group E</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in e %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<form action="/finals" method="post">
+    <input class="btn btn-primary" type="submit" id="simulateE" name="E" value="Simulate Group E">
+</form>
+</div>
+<div class="column">
+<table class="table table-sm" id="F">
+    <thead>
+        <strong>Group F</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in f %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<form action="/finals" method="post">
+    <input class="btn btn-primary" type="submit" id="simulateF" name="F" value="Simulate Group F">
+</form>
+</div>
+<div class="column">
+<table class="table table-sm" id="G">
+    <thead>
+        <strong>Group G</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in g %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<form action="/finals" method="post">
+    <input class="btn btn-primary" type="submit" id="simulateG" name="G" value="Simulate Group G">
+</form>
+</div>
+<div class="column">
+<table class="table table-sm" id="H">
+    <thead>
+        <strong>Group H</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in h %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<form action="/finals" method="post">
+    <input class="btn btn-primary" type="submit" id="simulateH" name="H" value="Simulate Group H">
+</form>
+</div>
+</div>
+
+{% endblock %}

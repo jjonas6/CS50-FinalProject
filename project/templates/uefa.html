@@ -1,0 +1,398 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    UEFA Qualifiers
+{% endblock %}
+
+{% block script %}
+<script>
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+
+
+            // Adds a class to highlight the rows to show which teams qualify for the knockout rounds
+        first = document.getElementsByClassName("1");
+        second = document.getElementsByClassName("2");
+
+
+        for (let i = 0; i < first.length; i++) {
+            first[i].className += " table-success";
+        }
+
+        secondPlace = JSON.parse({{ secondPlace | tojson }});
+        for (let i = 0; i < second.length; i++) {
+            for (let j = 0; j < secondPlace.length; j++) {
+
+                if (second[i]["childNodes"][3]["innerText"] == secondPlace[j]["name"]) {
+                    second[i].className += " table-info";
+                };
+            };
+
+        };
+
+
+
+
+
+    });
+
+
+
+
+</script>
+{% endblock %}
+
+{% block main %}
+
+<strong>2022 World Cup Qualifiers: UEFA</strong>
+
+<div class="row">
+    <div class="column">
+        <table class="table table-sm" id="A">
+            <thead>
+               <strong>Group A</strong>
+                <tr>
+                    <th>
+                        Position
+                    </th>
+                    <th>
+                        Team
+                    </th>
+                    <th>
+                        Points
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in a %}
+                <tr class="{{ loop.index }}">
+                    <td>
+                        {{ team.position }}
+                    </td>
+                    <td>
+                        {{ team.name }}
+                    </td>
+                    <td>
+                        {{ team.points }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+    <div class="column">
+        <table class="table table-sm" id="B">
+            <thead>
+                <strong>Group B</strong>
+                <tr>
+                    <th>
+                        Position
+                    </th>
+                    <th>
+                        Team
+                    </th>
+                    <th>
+                        Points
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in b %}
+                <tr class="{{ loop.index }}">
+                    <td>
+                        {{ team.position }}
+                    </td>
+                    <td>
+                        {{ team.name }}
+                    </td>
+                    <td>
+                        {{ team.points }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</div>
+<div class="column">
+<table class="table table-sm" id="C">
+    <thead>
+        <strong>Group C</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in c %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<div class="column">
+<table class="table table-sm" id="D">
+    <thead>
+        <strong>Group D</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in d %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    </div>
+</div>
+
+<div class="row">
+<div class="column">
+<table class="table table-sm" id="E">
+    <thead>
+        <strong>Group E</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in e %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<div class="column">
+<table class="table table-sm" id="F">
+    <thead>
+        <strong>Group F</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in f %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+<div class="column">
+<table class="table table-sm" id="G">
+    <thead>
+        <strong>Group G</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in g %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<div class="column">
+<table class="table table-sm" id="H">
+    <thead>
+        <strong>Group H</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in h %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+<div class="row">
+<div class="column">
+<table class="table table-sm" id="I">
+    <thead>
+        <strong>Group I</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in i %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<div class="column">
+<table class="table table-sm" id="J">
+    <thead>
+        <strong>Group J</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in j %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+        <form action="/uefa" method="post">
+            <input class="btn btn-primary" type="submit" id="simulateAll" name="All" value="Simulate Groups">
+        </form>
+<span class="next">
+
+    Click Next to continue.
+    <button class="btn btn-primary" id="uefaSecond" onclick="window.location.href='/concacaf'">Next</button>
+
+</span>
+{% endblock %}

@@ -1,0 +1,149 @@
+{% extends "layout.html" %}
+
+{% block title %}
+       Playoffs
+{% endblock %}
+
+
+{% block script %}
+<script>
+function simulateGame(team1, team2) {
+    rating1 = team1["rank"];
+    rating2 = team2["rank"];
+    probability = 1 / (1 + 10 ** ((rating2 - rating1) / 600));
+    return Math.random() < probability;
+};
+
+qualified = [];
+
+function simulatePlayoff(teams) {
+
+    // simulates games
+    if (simulateGame(teams[0], teams[3])) {
+        qualified.push(teams[0]);
+        qualified.push(0);
+    } else {
+        qualified.push(teams[3]);
+        qualified.push(1);
+    }
+    if (simulateGame(teams[1], teams[2])) {
+        qualified.push(teams[1]);
+        qualified.push(2);
+    } else {
+        qualified.push(teams[2]);
+        qualified.push(3);
+    }
+
+
+    return qualified;
+
+
+};
+    document.addEventListener("DOMContentLoaded", function() {
+
+
+
+
+
+
+        document.getElementById("playoff").addEventListener("click", function() {
+
+            // gathers seeded and teams from round 2
+            playoffTeams = JSON.parse({{ playoffJSON | tojson }});
+
+
+
+
+
+
+            qualified = simulatePlayoff(playoffTeams);
+
+            // changes letter colors to green of winners
+            for (let i = 1; i < qualified.length; i += 2) {
+               if (qualified[i] == 0) {
+                   document.getElementById("team1").style.color = "green";
+               }
+               if (qualified[i] == 1) {
+                   document.getElementById("team2").style.color = "green";
+               }
+               if (qualified[i] == 2) {
+                   document.getElementById("team3").style.color = "green";
+               }
+               if (qualified[i] == 3) {
+                   document.getElementById("team4").style.color = "green";
+               }
+            }
+
+            document.getElementById("playoff").setAttribute("disabled", true);
+
+            for (let i = 0; i < qualified.length; i++) {
+                if (!isNaN(qualified[i])) {
+                    qualified.splice(i, 1);
+                }
+
+            }
+
+            console.log(qualified);
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json;charset=utf-8",
+                url: "/playoff",
+                traditional: "true",
+                data: JSON.stringify(qualified),
+                dataType: "json"
+            });
+
+        })
+
+
+
+
+    });
+
+
+
+
+</script>
+{% endblock %}
+
+{% block main %}
+
+<strong>2022 World Cup Qualifiers: Playoffs</strong>
+<ul class="bracket bracket-1">
+            <li class="team-item">
+                <span id="team1">
+                {% if playoffPython[0] != null %}
+                    {{ playoffPython[0]["name"] }}
+                {% endif %}
+                </span>
+                <time>14:00</time>
+                <span id="team2">
+                {% if playoffPython[3] != null %}
+                    {{ playoffPython[3]["name"] }}
+                {% endif %}
+                </span>
+            </li>
+            <li class="team-item">
+                <span id="team3">
+                {% if playoffPython[1] != null %}
+                    {{ playoffPython[1]["name"] }}
+                {% endif %}
+                </span>
+                <time>20:00</time>
+                <span id="team4">
+                {% if playoffPython[2] != null %}
+                    {{ playoffPython[2]["name"] }}
+                {% endif %}
+                </span>
+            </li>
+</ul>
+
+<button class="btn btn-primary" type="submit" id="playoff" name="playoff" value="Simulate Playoff">Simulate Round 3</button>
+<div class="next">
+
+    Click Next to continue.
+    <button class="btn btn-primary" id="playoffNext" onclick="window.location.href='/finals'">Next</button>
+
+</div>
+{% endblock %}

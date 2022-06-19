@@ -1,0 +1,574 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    CAF Qualifiers
+{% endblock %}
+
+{% block script %}
+<script>
+function simulateGame(team1, team2) {
+    rating1 = team1["rank"];
+    rating2 = team2["rank"];
+    probability = 1 / (1 + 10 ** ((rating2 - rating1) / 600));
+    return Math.random() < probability;
+};
+
+qualified = [];
+
+function simulateRound3(teams) {
+
+    // simulates games
+    if (simulateGame(teams[0], teams[9])) {
+        qualified.push(teams[0]);
+        qualified.push(0);
+    } else {
+        qualified.push(teams[9]);
+        qualified.push(9);
+    }
+    if (simulateGame(teams[1], teams[8])) {
+        qualified.push(teams[1]);
+        qualified.push(1);
+    } else {
+        qualified.push(teams[8]);
+        qualified.push(8);
+    }
+    if (simulateGame(teams[2], teams[7])) {
+        qualified.push(teams[2]);
+        qualified.push(2);
+    } else {
+        qualified.push(teams[7]);
+        qualified.push(7);
+    }
+    if (simulateGame(teams[3], teams[6])) {
+        qualified.push(teams[3]);
+        qualified.push(3);
+    } else {
+        qualified.push(teams[6]);
+        qualified.push(6);
+    }
+    if (simulateGame(teams[4], teams[5])) {
+        qualified.push(teams[4]);
+        qualified.push(4);
+    } else {
+        qualified.push(teams[5]);
+        qualified.push(5);
+    }
+
+    return qualified;
+
+
+};
+    document.addEventListener("DOMContentLoaded", function() {
+
+
+
+            // Adds a class to highlight the rows to show which teams qualify for the knockout rounds
+        first = document.getElementsByClassName("1");
+
+
+        for (let i = 0; i < first.length; i++) {
+            first[i].className += " table-success";
+        }
+
+
+        document.getElementById("simulateRound3").addEventListener("click", function() {
+
+            // gathers seeded and teams from round 2
+            winners = JSON.parse({{ winners | tojson }});
+
+
+
+            console.log(winners);
+
+
+
+            qualified = simulateRound3(winners);
+
+            console.log(qualified);
+            for (let i = 1; i < qualified.length; i += 2) {
+               if (qualified[i] == 0) {
+                   document.getElementById("team0").style.color = "green";
+               }
+               if (qualified[i] == 1) {
+                   document.getElementById("team1").style.color = "green";
+               }
+               if (qualified[i] == 2) {
+                   document.getElementById("team2").style.color = "green";
+               }
+               if (qualified[i] == 3) {
+                   document.getElementById("team3").style.color = "green";
+               }
+               if (qualified[i] == 4) {
+                   document.getElementById("team4").style.color = "green";
+               }
+               if (qualified[i] == 5) {
+                   document.getElementById("team5").style.color = "green";
+               }
+               if (qualified[i] == 6) {
+                   document.getElementById("team6").style.color = "green";
+               }
+               if (qualified[i] == 7) {
+                   document.getElementById("team7").style.color = "green";
+               }
+               if (qualified[i] == 8) {
+                   document.getElementById("team8").style.color = "green";
+               }
+               if (qualified[i] == 9) {
+                   document.getElementById("team9").style.color = "green";
+               }
+            }
+
+            document.getElementById("simulateRound3").setAttribute("disabled", true);
+            document.getElementById("simulateAll").setAttribute("disabled", true);
+
+            for (let i = 0; i < qualified.length; i++) {
+                if (!isNaN(qualified[i])) {
+                    qualified.splice(i, 1);
+                }
+
+            }
+
+            $.ajax({
+                type: "POST",
+                contentType: "application/json;charset=utf-8",
+                url: "/caf",
+                traditional: "true",
+                data: JSON.stringify(qualified),
+                dataType: "json"
+            });
+
+        })
+
+
+
+
+    });
+
+
+
+
+</script>
+{% endblock %}
+
+{% block main %}
+
+<strong>2022 World Cup Qualifiers: CAF</strong>
+
+<div class="row">
+    <div class="column">
+        <table class="table table-sm" id="A">
+            <thead>
+               <strong>Group A</strong>
+                <tr>
+                    <th>
+                        Position
+                    </th>
+                    <th>
+                        Team
+                    </th>
+                    <th>
+                        Points
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in a %}
+                <tr class="{{ loop.index }}">
+                    <td>
+                        {{ team.position }}
+                    </td>
+                    <td>
+                        {{ team.name }}
+                    </td>
+                    <td>
+                        {{ team.points }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+    <div class="column">
+        <table class="table table-sm" id="B">
+            <thead>
+                <strong>Group B</strong>
+                <tr>
+                    <th>
+                        Position
+                    </th>
+                    <th>
+                        Team
+                    </th>
+                    <th>
+                        Points
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in b %}
+                <tr class="{{ loop.index }}">
+                    <td>
+                        {{ team.position }}
+                    </td>
+                    <td>
+                        {{ team.name }}
+                    </td>
+                    <td>
+                        {{ team.points }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+</div>
+<div class="column">
+<table class="table table-sm" id="C">
+    <thead>
+        <strong>Group C</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in c %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<div class="column">
+<table class="table table-sm" id="D">
+    <thead>
+        <strong>Group D</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in d %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+    </div>
+</div>
+
+<div class="row">
+<div class="column">
+<table class="table table-sm" id="E">
+    <thead>
+        <strong>Group E</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in e %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<div class="column">
+<table class="table table-sm" id="F">
+    <thead>
+        <strong>Group F</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in f %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+</div>
+<div class="column">
+<table class="table table-sm" id="G">
+    <thead>
+        <strong>Group G</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in g %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<div class="column">
+<table class="table table-sm" id="H">
+    <thead>
+        <strong>Group H</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in h %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+<div class="row">
+<div class="column">
+<table class="table table-sm" id="I">
+    <thead>
+        <strong>Group I</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in i %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+<div class="column">
+<table class="table table-sm" id="J">
+    <thead>
+        <strong>Group J</strong>
+        <tr>
+            <th>
+                Position
+            </th>
+            <th>
+                Team
+            </th>
+            <th>
+                Points
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for team in j %}
+        <tr class="{{ loop.index }}">
+            <td>
+                {{ team.position }}
+            </td>
+            <td>
+                {{ team.name }}
+            </td>
+            <td>
+                {{ team.points }}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+</div>
+</div>
+        <form action="/caf" method="post">
+            <input class="btn btn-primary" type="submit" id="simulateAll" name="All" value="Simulate Groups">
+        </form>
+
+<ul class="bracket bracket-1">
+            <li class="team-item">
+                <span id="team0">
+                {% if qualified[0] != null %}
+                    {{ qualified[0]["name"] }}
+                {% endif %}
+                </span>
+                <time>14:00</time>
+                <span id="team9">
+                {% if qualified[9] != null %}
+                    {{ qualified[9]["name"] }}
+                {% endif %}
+                </span>
+            </li>
+            <li class="team-item">
+                <span id="team1">
+                {% if qualified[1] != null %}
+                    {{ qualified[1]["name"] }}
+                {% endif %}
+                </span>
+                <time>20:00</time>
+                <span id="team8">
+                {% if qualified[8] != null %}
+                    {{ qualified[8]["name"] }}
+                {% endif %}
+                </span>
+            </li>
+            <li class="team-item">
+                <span id="team2">
+                {% if qualified[2] != null %}
+                    {{ qualified[2]["name"] }}
+                {% endif %}
+                </span>
+                <time>17:00</time>
+                <span id="team7">
+                {% if qualified[7] != null %}
+                    {{ qualified[7]["name"] }}
+                {% endif %}
+                </span>
+            </li>
+            <li class="team-item">
+                <span id="team3">
+                {% if qualified[3] != null %}
+                    {{ qualified[3]["name"] }}
+                {% endif %}
+                </span>
+                <time>20:00</time>
+                <span id="team6">
+                {% if qualified[6] != null %}
+                    {{ qualified[6]["name"] }}
+                {% endif %}
+                </span>
+            </li>
+            <li class="team-item">
+                <span id="team4">
+                {% if qualified[4] != null %}
+                    {{ qualified[4]["name"] }}
+                {% endif %}
+                </span>
+                <time>17:00</time>
+                <span id="team5">
+                {% if qualified[5] != null %}
+                    {{ qualified[5]["name"] }}
+                {% endif %}
+                </span>
+            </li>
+        </ul>
+        <button class="btn btn-primary" type="submit" id="simulateRound3" name="round3" value="Simulate Round 3">Simulate Round 3</button>
+<span class="next">
+
+    Click Next to continue.
+    <button class="btn btn-primary" id="cafNext" onclick="window.location.href='/afc'">Next</button>
+
+</span>
+{% endblock %}

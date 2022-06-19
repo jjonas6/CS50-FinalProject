@@ -1,0 +1,78 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    CONMEBOL Qualifiers
+{% endblock %}
+
+{% block script %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Adds a class to highlight the rows to show which teams qualify for the knockout rounds
+    first = document.getElementsByClassName("1");
+    second = document.getElementsByClassName("2");
+    third = document.getElementsByClassName("3");
+    fourth = document.getElementsByClassName("4");
+    fifth = document.getElementsByClassName("5");
+
+    for (let i = 0; i < first.length; i++) {
+        first[i].className += " table-success";
+    }
+    for (let i = 0; i < second.length; i++) {
+        second[i].className += " table-success";
+    }
+    for (let i = 0; i < third.length; i++) {
+        third[i].className += " table-success";
+    }
+    for (let i = 0; i < fourth.length; i++) {
+        fourth[i].className += " table-success";
+    }
+    for (let i = 0; i < fifth.length; i++) {
+        fifth[i].className += " table-info";
+    }
+
+});
+</script>
+{% endblock %}
+
+{% block main %}
+<div>
+    <table class="table table-sm" id="conmebol">
+        <thead>
+            <strong>2022 World Cup Qualifiers: CONMEBOL</strong>
+            <tr>
+                <th>
+                    Position
+                </th>
+                <th>
+                    Team
+                </th>
+                <th>
+                    Points
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for team in teams %}
+            <tr class="{{ loop.index }}">
+                <td>
+                    {{ team.position }}
+                </td>
+                <td>
+                    {{ team.name }}
+                </td>
+                <td>
+                    {{ team.points }}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form action="/conmebol" method="post">
+        <input class="btn btn-primary" type="submit" id="simulateConmebol" name="conmebol" value="Simulate Group">
+    </form>
+</div>
+<span class="next">
+    Click Next to continue.
+    <button class="btn btn-primary" type="submit" id="conmebol-next" onclick="window.location.href='/uefa'">Next</button>
+</span>
+{% endblock %}

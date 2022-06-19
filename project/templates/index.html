@@ -1,0 +1,31 @@
+{% extends "layout.html" %}
+
+{% block title %}
+    Home
+{% endblock %}
+
+{% block main %}
+<form class="buttons" action="/" method="post">
+    <div>
+        <h2>Instructions</h2>
+        <p>
+            This web app allows you to do a complete simulation of the 2022 World Cup.
+        </p>
+        <p>
+            You can either start with <strong>Finals Only</strong> which will allow you to run a simulation of just the 2022 FIFA World Cup tournament with the teams that are currently projected to reach the tournament.
+        </p>
+        <p>
+            You can also start with <strong>All Qualifiers</strong> which will allow you to simulate every conference's qualification rounds (except the OFC) starting with the round that is currently in action.
+        </p>
+        <p>
+            Once you run a simulation, press <strong>Home</strong> to return here.
+        </p>
+    </div>
+<span class="index">
+    <input id="finalsonly" class="btn btn-primary" type="submit" name="finals" value="Finals Only">
+</span>
+<span class="index">
+    <input id="allqualifiers" class="btn btn-primary" type="submit" name="qualifiers" value="All Qualifiers">
+</span>
+</form>
+{% endblock %}
